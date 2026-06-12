@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeyLine Auth Documentation | Technical Reference</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; } .code-font { font-family: 'JetBrains Mono', monospace; }</style>
+</head>
+<body class="bg-[#0a0a0c] text-slate-300 antialiased min-h-screen">
+    <header class="border-b border-slate-900 sticky top-0 bg-[#0a0a0c]/80 backdrop-blur-md z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-[#FF8F00]/10 p-2 rounded-lg border border-[#FF8F00]/20">
+                    <svg class="w-6 h-6 text-[#FF8F00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                </div>
+                <span class="text-xl font-bold text-white tracking-tight">Key<span class="text-[#FF8F00]">Line</span> <span class="text-xs font-mono px-2 py-0.5 bg-slate-900 text-slate-500 rounded border border-slate-800 ml-2">v1.0 Docs</span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-12 grid md:grid-cols-4 gap-8">
+        <aside class="hidden md:block col-span-1 sticky top-24 h-fit space-y-3 border-r border-slate-900 pr-4">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Getting Started</p>
+            <a href="#architecture" class="block text-sm text-[#FF8F00] font-medium">1. Auth Architecture</a>
+            <a href="#endpoint-auth" class="block text-sm text-slate-400 hover:text-white transition">2. Authorize Endpoint</a>
+            <a href="#cors-mechanics" class="block text-sm text-slate-400 hover:text-white transition">3. Dynamic CORS Rules</a>
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mt-6 mb-2">API Reference</p>
+            <a href="#token-exchange" class="block text-sm text-slate-400 hover:text-white transition">4. Token Exchange</a>
+            <a href="#error-codes" class="block text-sm text-slate-400 hover:text-white transition">5. Error Directory</a>
+        </aside>
+
+        <div class="col-span-1 md:col-span-3 space-y-16">
+            <section id="architecture" class="space-y-4">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2"><span class="text-[#FF8F00]">1.</span> Authentication Flow Architecture</h2>
+                <p class="text-sm text-slate-400 leading-relaxed">KeyLine Auth processes standard multi-factor identity challenges via an asynchronous distributed lifecycle. Instead of using complex SDK libraries, your application utilizes browser redirects linked to dynamic database-validated clients.</p>
+            </section>
+
+            <section id="endpoint-auth" class="space-y-4">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2"><span class="text-[#FF8F00]">2.</span> GET /oauth/authorize</h2>
+                <p class="text-sm text-slate-400">Redirect users to this URL to trigger the KeyLine OTP interface screen:</p>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 code-font text-xs overflow-x-auto text-emerald-400">
+                    https://keyline-l1n2.onrender.com/oauth/authorize?client_id=<span class="text-[#FF8F00]">YOUR_CLIENT_ID</span>&redirect_uri=<span class="text-[#FF8F00]">YOUR_REDIRECT_URI</span>&response_type=code&scope=openid
+                </div>
+                <p class="text-xs font-bold text-slate-400 mt-4 uppercase">Query Parameters Table:</p>
+                <div class="overflow-x-auto border border-slate-900 rounded-xl bg-slate-950/40 text-xs">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-900 bg-slate-950">
+                                <th class="p-3 font-semibold text-white">Parameter</th>
+                                <th class="p-3 font-semibold text-white">Required</th>
+                                <th class="p-3 font-semibold text-white">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-900">
+                            <tr>
+                                <td class="p-3 code-font text-[#FF8F00]">client_id</td>
+                                <td class="p-3 text-red-500">True</td>
+                                <td class="p-3 text-slate-400">Your unique hash obtained inside the mobile app ecosystem.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 code-font text-[#FF8F00]">redirect_uri</td>
+                                <td class="p-3 text-red-500">True</td>
+                                <td class="p-3 text-slate-400">Must exactly match one of your application's whitelisted allowedOrigins.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="cors-mechanics" class="space-y-4">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2"><span class="text-[#FF8F00]">3.</span> Dynamic CORS Handshake</h2>
+                <p class="text-sm text-slate-400 leading-relaxed">Our servers maintain zero static wildcards. When your client triggers a preflight OPTIONS handshake, the system automatically checks the extraction header against database.json list properties.</p>
+            </section>
+
+            <section id="token-exchange" class="space-y-4">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2"><span class="text-[#FF8F00]">4.</span> POST /oauth/token</h2>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 code-font text-xs text-slate-400 space-y-1">
+                    <p>{</p>
+                    <p class="pl-4">"client_id": <span class="text-emerald-400">"kl_client_5o4myzndm3zonrrr"</span>,</p>
+                    <p class="pl-4">"code": <span class="text-emerald-400">"auth_transaction_temp_hash_value"</span>,</p>
+                    <p class="pl-4">"grant_type": <span class="text-emerald-400">"authorization_code"</span></p>
+                    <p>}</p>
+                </div>
+            </section>
+
+            <section id="error-codes" class="space-y-4">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2"><span class="text-[#FF8F00]">5.</span> Error Resolution Directory</h2>
+                <div class="space-y-2 text-xs">
+                    <div class="p-3 bg-red-950/20 border border-red-900/30 rounded-xl"><span class="code-font text-red-500 font-bold">CORS_ORIGIN_DENIED:</span> Domain mismatch in database.json.</div>
+                    <div class="p-3 bg-red-950/20 border border-red-900/30 rounded-xl"><span class="code-font text-red-500 font-bold">OTP_MISMATCH_STRING:</span> Sanitized validation sequence failure.</div>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
